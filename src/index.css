@@ -160,7 +160,7 @@ button { font-family: inherit; }
   /* Fluid: 15px on small phones → 18px on tablet/desktop */
   font-size: clamp(15px, 3.2vw, 18px);
   line-height: 1.55;
-  color: #5a5a62;
+  color: rgba(240, 238, 232, 0.88);
   max-width: 520px;
   margin: 0 0 34px;
 }
@@ -341,7 +341,7 @@ button { font-family: inherit; }
   .hero-lead {
     max-width: 100%;
     margin-bottom: 28px;
-    text-shadow: 0 1px 18px rgba(244,243,240,0.5);
+    text-shadow: 0 1px 20px rgba(0,0,0,0.7), 0 0 40px rgba(0,0,0,0.4);
   }
   .hero-ctas { flex-direction: column !important; gap: 10px !important; }
   .hero-ctas .btn-dark,
