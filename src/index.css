@@ -375,7 +375,7 @@ button { font-family: inherit; }
 
   /* Spotlight */
   .spotlight-section-pad { padding: 40px 20px !important; }
-  .spotlight-img-col { min-height: 260px; }
+  .spotlight-img-col { min-height: 0; aspect-ratio: 4/3; }
   .spotlight-details-pad { padding: 32px 28px !important; }
   .spotlight-name { font-size: 32px !important; }
   .spotlight-ctas { flex-direction: column; }

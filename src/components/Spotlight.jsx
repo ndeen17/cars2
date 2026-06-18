@@ -2,6 +2,8 @@ import { Suspense } from 'react'
 import { FEATURED } from '../data/cars'
 import CarViewer3D from './CarViewer3D'
 
+const IS_MOBILE = typeof window !== 'undefined' && window.innerWidth <= 768
+
 export default function Spotlight({ onEnquire }) {
   return (
     <section id="spotlight" className="spotlight-section-pad" style={s.section}>
@@ -11,7 +13,7 @@ export default function Spotlight({ onEnquire }) {
           {/* 3D viewer column */}
           <div className="spotlight-img-col" style={s.viewerCol}>
             <div style={s.spotLabel}>Spotlight · 3D</div>
-            <div style={s.hint}>Drag to rotate</div>
+            <div style={s.hint}>{IS_MOBILE ? 'Touch & drag to rotate' : 'Drag to rotate'}</div>
             <Suspense fallback={<div style={s.fallback}>Loading…</div>}>
               <CarViewer3D />
             </Suspense>
