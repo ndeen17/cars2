@@ -1014,9 +1014,19 @@ button { font-family: inherit; }
   .cd-cta-large { padding: 16px 36px; font-size: 15px; }
 
   /* AI widget on mobile */
-  .ai-widget { bottom: 16px; right: 16px; }
-  .ai-panel { width: calc(100vw - 32px); right: 0; }
+  .ai-widget { bottom: 10px; right: 12px; }
+  /* Panel is right-aligned inside the widget (align-items:flex-end).
+     Widget is at right:12px, so panel left edge = 12px if width = 100vw-24px */
+  .ai-panel { width: calc(100vw - 24px); max-height: calc(100dvh - 80px); }
   .ai-trigger { padding: 12px 18px; font-size: 13px; }
+}
+
+/* Landscape phones — very little vertical room */
+@media (max-height: 480px) {
+  .ai-widget { bottom: 8px; right: 12px; }
+  .ai-panel  { max-height: calc(100dvh - 60px); border-radius: 16px; }
+  .ai-header { padding: 12px 14px 10px; }
+  .ai-icon   { width: 28px; height: 28px; font-size: 13px; }
 }
 
 
@@ -1027,8 +1037,8 @@ button { font-family: inherit; }
 /* The overlay has transform so fixed children are contained within it */
 .ai-widget {
   position: fixed;
-  bottom: 28px;
-  right: 28px;
+  bottom: 14px;
+  right: 24px;
   z-index: 300;
   display: flex;
   flex-direction: column;
@@ -1038,7 +1048,11 @@ button { font-family: inherit; }
 
 /* ── Chat panel ── */
 .ai-panel {
-  width: 380px;
+  /* Never wider than the screen; never taller than the available space above the trigger */
+  width: min(380px, calc(100vw - 48px));
+  max-height: calc(100dvh - 90px);
+  display: flex;
+  flex-direction: column;
   background: #ffffff;
   border: 1px solid rgba(0,0,0,0.1);
   border-radius: 22px;
@@ -1105,7 +1119,10 @@ button { font-family: inherit; }
 
 /* ── Messages ── */
 .ai-messages {
-  height: 300px;
+  /* flex: 1 + min-height: 0 lets the messages area shrink when the panel
+     is constrained by max-height (small phones, landscape orientation) */
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: 16px 14px 10px;
   display: flex;

@@ -6,6 +6,7 @@ import Spotlight from './components/Spotlight'
 import Enquiry from './components/Enquiry'
 import Footer from './components/Footer'
 import CarDetail from './components/CarDetail'
+import AskAI from './components/AskAI'
 
 export default function App() {
   const [selectedModel, setSelectedModel] = useState('Lumen GT')
@@ -47,11 +48,14 @@ export default function App() {
       <Footer />
 
       {detailCar && (
-        <CarDetail
-          car={detailCar}
-          onClose={closeDetail}
-          onEnquire={enquireAbout}
-        />
+        <>
+          <CarDetail
+            car={detailCar}
+            onClose={closeDetail}
+            onEnquire={enquireAbout}
+          />
+          <AskAI car={detailCar} />
+        </>
       )}
     </>
   )

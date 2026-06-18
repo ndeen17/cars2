@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { CARS } from '../data/cars'
 import MediaAsset from './MediaAsset'
-import AskAI from './AskAI'
 
 const SPEC_TABS = [
   { id: 'performance', label: 'Performance' },
@@ -227,9 +226,6 @@ export default function CarDetail({ car, onClose, onEnquire }) {
           </div>
         </div>
       </section>
-
-      {/* ── Floating AI chat ─────────────────────────── */}
-      <AskAI car={car} />
 
       {/* ── Bottom enquiry CTA ────────────────────────── */}
       <section className="cd-bottom-cta">
