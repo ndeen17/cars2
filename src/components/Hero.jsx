@@ -1,50 +1,12 @@
-import { useState, useRef } from 'react'
+import MediaAsset from './MediaAsset'
+import { HERO_ASSET } from '../data/cars'
 
 export default function Hero() {
-  const [media, setMedia] = useState(null) // { url, type: 'image'|'video' }
-  const [dragging, setDragging] = useState(false)
-  const inputRef = useRef(null)
-
-  function loadFile(file) {
-    if (!file) return
-    const url = URL.createObjectURL(file)
-    setMedia({ url, type: file.type.startsWith('video/') ? 'video' : 'image' })
-  }
-
-  function onDrop(e) {
-    e.preventDefault()
-    setDragging(false)
-    loadFile(e.dataTransfer.files[0])
-  }
-
   return (
     <section style={s.section}>
-      {/* media slot */}
+      {/* hero media */}
       <div style={s.mediaSlot}>
-        {media ? (
-          media.type === 'video' ? (
-            <video src={media.url} autoPlay loop muted playsInline style={s.mediaFill} />
-          ) : (
-            <img src={media.url} alt="Hero" style={s.mediaFill} />
-          )
-        ) : (
-          <div
-            className={`hero-drop-zone${dragging ? ' dragging' : ''}`}
-            onClick={() => inputRef.current?.click()}
-            onDragOver={e => { e.preventDefault(); setDragging(true) }}
-            onDragLeave={() => setDragging(false)}
-            onDrop={onDrop}
-          >
-            Drop hero image or video here
-          </div>
-        )}
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*,video/*"
-          style={{ display: 'none' }}
-          onChange={e => loadFile(e.target.files[0])}
-        />
+        <MediaAsset src={HERO_ASSET} alt="Hero" style={s.mediaFill} />
       </div>
 
       {/* gradient overlay */}

@@ -1,4 +1,5 @@
 import { FEATURED } from '../data/cars'
+import MediaAsset from './MediaAsset'
 
 export default function Spotlight({ onEnquire }) {
   return (
@@ -6,11 +7,11 @@ export default function Spotlight({ onEnquire }) {
       <div style={s.card}>
         <div className="spotlight-inner" style={s.inner}>
 
-          {/* image column */}
+          {/* media column */}
           <div className="spotlight-img-col" style={s.imgCol}>
             <div style={s.imgOverlay} />
             <div style={s.spotLabel}>Spotlight</div>
-            <div style={s.carLabel}>[ {FEATURED.name} · profile ]</div>
+            <MediaAsset src={FEATURED.asset} alt={FEATURED.name} style={s.spotMedia} />
           </div>
 
           {/* details column */}
@@ -45,10 +46,10 @@ const s = {
   section:   { maxWidth: 1280, margin: '0 auto', padding: '70px 32px' },
   card:      { background: 'linear-gradient(160deg, #ffffff 0%, #f5f4f1 100%)', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 24, overflow: 'hidden' },
   inner:     { display: 'grid', gridTemplateColumns: '1.15fr 1fr', minHeight: 480 },
-  imgCol:    { position: 'relative', backgroundColor: '#eeede9', backgroundImage: 'repeating-linear-gradient(125deg, rgba(0,0,0,0.03) 0 1px, transparent 1px 20px)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: '1px solid rgba(0,0,0,0.06)' },
-  imgOverlay:{ position: 'absolute', inset: 0, background: 'radial-gradient(80% 60% at 50% 50%, rgba(0,0,0,0.045) 0%, rgba(238,237,233,0) 65%)' },
-  spotLabel: { position: 'absolute', left: 32, top: 32, fontFamily: "'Space Mono', monospace", fontSize: 12, letterSpacing: 3, color: '#4a5b73', textTransform: 'uppercase' },
-  carLabel:  { fontFamily: "'Space Mono', monospace", fontSize: 12, letterSpacing: 2, color: 'rgba(0,0,0,0.3)', textTransform: 'uppercase', position: 'relative', zIndex: 1 },
+  imgCol:    { position: 'relative', backgroundColor: '#eeede9', backgroundImage: 'repeating-linear-gradient(125deg, rgba(0,0,0,0.03) 0 1px, transparent 1px 20px)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: '1px solid rgba(0,0,0,0.06)', overflow: 'hidden' },
+  imgOverlay:{ position: 'absolute', inset: 0, zIndex: 2, background: 'radial-gradient(80% 60% at 50% 50%, rgba(0,0,0,0.045) 0%, rgba(238,237,233,0) 65%)', pointerEvents: 'none' },
+  spotLabel: { position: 'absolute', left: 32, top: 32, zIndex: 3, fontFamily: "'Space Mono', monospace", fontSize: 12, letterSpacing: 3, color: '#4a5b73', textTransform: 'uppercase' },
+  spotMedia: { width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 },
   details:   { padding: '48px 44px', display: 'flex', flexDirection: 'column', justifyContent: 'center' },
   typeBadge: { background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 5, padding: '4px 10px', fontSize: 10.5, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: '#44444c', width: 'fit-content', marginBottom: 20 },
   name:      { fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: 42, letterSpacing: -1.5, margin: '0 0 10px' },
