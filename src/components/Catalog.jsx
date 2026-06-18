@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { CARS, FILTERS } from '../data/cars'
 import MediaAsset from './MediaAsset'
 
-export default function Catalog({ onEnquire }) {
+export default function Catalog({ onEnquire, onCarSelect }) {
   const [filter, setFilter] = useState('All')
   const [query, setQuery]   = useState('')
 
@@ -53,16 +53,16 @@ export default function Catalog({ onEnquire }) {
         {visible.length === 0 ? (
           <div className="car-empty">No models match your search.</div>
         ) : (
-          visible.map(car => <CarCard key={car.id} car={car} onEnquire={onEnquire} />)
+          visible.map(car => <CarCard key={car.id} car={car} onEnquire={onEnquire} onSelect={onCarSelect} />)
         )}
       </div>
     </section>
   )
 }
 
-function CarCard({ car, onEnquire }) {
+function CarCard({ car, onEnquire, onSelect }) {
   return (
-    <article className="car-card" onClick={() => onEnquire(car.name)}>
+    <article className="car-card" onClick={() => onSelect(car)}>
       <div className="car-thumb">
         <span className="car-badge">{car.body}</span>
         <MediaAsset src={car.asset} alt={car.name} className="car-thumb-media" />
