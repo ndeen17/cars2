@@ -3,21 +3,21 @@ import MediaAsset from './MediaAsset'
 
 export default function Spotlight({ onEnquire }) {
   return (
-    <section id="spotlight" style={s.section}>
+    <section id="spotlight" className="spotlight-section-pad" style={s.section}>
       <div style={s.card}>
-        <div className="spotlight-inner" style={s.inner}>
+        <div className="spotlight-inner">
 
           {/* media column */}
-          <div className="spotlight-img-col" style={s.imgCol}>
+          <div className="spotlight-img-col">
             <div style={s.imgOverlay} />
             <div style={s.spotLabel}>Spotlight</div>
             <MediaAsset src={FEATURED.asset} alt={FEATURED.name} style={s.spotMedia} />
           </div>
 
           {/* details column */}
-          <div style={s.details}>
+          <div className="spotlight-details-pad" style={s.details}>
             <div style={s.typeBadge}>{FEATURED.type}</div>
-            <h2 style={s.name}>{FEATURED.name}</h2>
+            <h2 className="spotlight-name" style={s.name}>{FEATURED.name}</h2>
             <p style={s.desc}>{FEATURED.desc}</p>
 
             <div style={s.specsGrid}>
@@ -29,7 +29,7 @@ export default function Spotlight({ onEnquire }) {
               ))}
             </div>
 
-            <div style={s.ctas}>
+            <div className="spotlight-ctas" style={s.ctas}>
               <button className="btn-dark" onClick={() => onEnquire(FEATURED.name)}>
                 Enquire about {FEATURED.name}
               </button>
@@ -45,8 +45,6 @@ export default function Spotlight({ onEnquire }) {
 const s = {
   section:   { maxWidth: 1280, margin: '0 auto', padding: '70px 32px' },
   card:      { background: 'linear-gradient(160deg, #ffffff 0%, #f5f4f1 100%)', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 24, overflow: 'hidden' },
-  inner:     { display: 'grid', gridTemplateColumns: '1.15fr 1fr', minHeight: 480 },
-  imgCol:    { position: 'relative', backgroundColor: '#eeede9', backgroundImage: 'repeating-linear-gradient(125deg, rgba(0,0,0,0.03) 0 1px, transparent 1px 20px)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: '1px solid rgba(0,0,0,0.06)', overflow: 'hidden' },
   imgOverlay:{ position: 'absolute', inset: 0, zIndex: 2, background: 'radial-gradient(80% 60% at 50% 50%, rgba(0,0,0,0.045) 0%, rgba(238,237,233,0) 65%)', pointerEvents: 'none' },
   spotLabel: { position: 'absolute', left: 32, top: 32, zIndex: 3, fontFamily: "'Space Mono', monospace", fontSize: 12, letterSpacing: 3, color: '#4a5b73', textTransform: 'uppercase' },
   spotMedia: { width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 },
@@ -58,5 +56,5 @@ const s = {
   specCell:  { background: '#ffffff', padding: '18px 20px' },
   specVal:   { fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: 24 },
   specKey:   { fontSize: 12, color: '#8a8a90', marginTop: 3, textTransform: 'uppercase', letterSpacing: 1 },
-  ctas:      { display: 'flex', gap: 12, flexWrap: 'wrap' },
+  ctas:      { display: 'flex', gap: 12 },
 }
