@@ -358,7 +358,7 @@ export const CARS = [
     seats: 5,
     bags: 3,
     rating: '4.9',
-    asset: '/assets/marque-s.svg',
+    asset: '/assets/marque-s.mp4',
     desc: 'The flagship grand tourer. Tri-motor AWD, a 405-mile range, and a cabin engineered around silence and speed in equal measure.',
     specs: {
       quick: [
