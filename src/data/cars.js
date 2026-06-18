@@ -25,4 +25,9 @@ export const FEATURED = {
   ],
 }
 
-export const HERO_ASSET = '/assets/hero.mp4'
+// Add more entries as you drop in new files — the hero cycles through all of them
+export const HERO_VIDEOS = [
+  '/assets/hero.mp4',
+  '/assets/hero1.mp4',
+  '/assets/hero2.mp4',
+]
