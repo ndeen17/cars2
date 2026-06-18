@@ -1,30 +1,66 @@
 import { useState, useEffect, useRef } from 'react'
 import { HERO_VIDEOS } from '../data/cars'
 
+// How long the crossfade lasts — must match the CSS transition below
+const FADE = 0.9
+
 export default function Hero() {
   const [active, setActive] = useState(0)
-  const refs = useRef([])
+  const activeRef = useRef(0)   // sync ref so timeUpdate handlers see current value
+  const refs     = useRef([])   // video element refs
+  const busy     = useRef(false) // guard against double-triggers mid-transition
 
-  // When active index changes: reset & play new video, pause all others
+  // Play first video on mount
   useEffect(() => {
-    refs.current.forEach((vid, i) => {
-      if (!vid) return
-      if (i === active) {
-        vid.currentTime = 0
-        vid.play().catch(() => {})
-      } else {
-        vid.pause()
-        vid.currentTime = 0
-      }
-    })
+    refs.current[0]?.play().catch(() => {})
+  }, [])
+
+  // Whenever active changes, preload the upcoming video so it's buffered & ready
+  useEffect(() => {
+    const next = (active + 1) % HERO_VIDEOS.length
+    const vid  = refs.current[next]
+    if (vid) { vid.preload = 'auto'; vid.load() }
   }, [active])
 
-  function advance() {
-    setActive(i => (i + 1) % HERO_VIDEOS.length)
+  function transition(to) {
+    if (busy.current) return
+    busy.current = true
+
+    // Start the incoming video playing NOW — it will be audibly/visually
+    // fading in from opacity 0, so the playback is already running during the fade
+    const incoming = refs.current[to]
+    if (incoming) {
+      incoming.currentTime = 0
+      incoming.play().catch(() => {})
+    }
+
+    // Swap the visible layer — CSS opacity transition handles the dissolve
+    activeRef.current = to
+    setActive(to)
+
+    // Unlock after the fade fully completes
+    setTimeout(() => { busy.current = false }, FADE * 1000 + 100)
   }
 
-  function goTo(i) {
-    setActive(i)
+  // Called on every timeUpdate — fires ~4–60× per second depending on browser
+  function handleTimeUpdate(i) {
+    return (e) => {
+      // Only the active video drives the transition trigger
+      if (i !== activeRef.current || busy.current) return
+      const vid = e.currentTarget
+      if (!vid.duration || isNaN(vid.duration)) return
+
+      // Begin the crossfade exactly FADE seconds before the end —
+      // the outgoing video is still playing while the incoming one fades in
+      if (vid.duration - vid.currentTime <= FADE) {
+        transition((i + 1) % HERO_VIDEOS.length)
+      }
+    }
+  }
+
+  function handleDotClick(i) {
+    if (i === activeRef.current) return
+    transition(i)
   }
 
   return (
@@ -38,7 +74,7 @@ export default function Hero() {
         `,
       }}
     >
-      {/* stacked videos — CSS opacity crossfade between them */}
+      {/* All videos stacked; only the active one is opaque */}
       <div style={s.mediaSlot}>
         {HERO_VIDEOS.map((src, i) => (
           <video
@@ -47,21 +83,19 @@ export default function Hero() {
             src={src}
             muted
             playsInline
-            preload={i === 0 ? 'auto' : i === 1 ? 'metadata' : 'none'}
-            onEnded={advance}
+            preload={i === 0 ? 'auto' : 'none'}
+            onTimeUpdate={handleTimeUpdate(i)}
             className="hero-video"
             style={{
               opacity: active === i ? 1 : 0,
-              transition: 'opacity 0.9s ease',
+              transition: `opacity ${FADE}s ease`,
             }}
           />
         ))}
       </div>
 
-      {/* gradient overlay */}
       <div style={s.overlay} />
 
-      {/* content */}
       <div style={s.contentOuter}>
         <div className="hero-content hero-content-wrap" style={s.contentInner}>
           <h1 className="hero-h1">Drive Electric.<br />Drive Nigeria Forward.</h1>
@@ -75,14 +109,13 @@ export default function Hero() {
             <a href="#enquiry" className="btn-ghost">Book a test drive</a>
           </div>
 
-          {/* video indicator dots — only shown when more than one video */}
           {HERO_VIDEOS.length > 1 && (
             <div style={s.dots}>
               {HERO_VIDEOS.map((_, i) => (
                 <button
                   key={i}
                   aria-label={`Video ${i + 1}`}
-                  onClick={() => goTo(i)}
+                  onClick={() => handleDotClick(i)}
                   style={{
                     ...s.dot,
                     width: active === i ? 28 : 8,
@@ -101,34 +134,10 @@ export default function Hero() {
 }
 
 const s = {
-  mediaSlot: {
-    position: 'absolute', inset: 0,
-    width: '100%', height: '100%', zIndex: 1,
-  },
-  overlay: {
-    position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2,
-    background: 'linear-gradient(180deg, rgba(244,243,240,0.35) 0%, rgba(244,243,240,0) 30%, rgba(244,243,240,0.15) 62%, #f4f3f0 100%)',
-  },
-  contentOuter: {
-    position: 'relative', zIndex: 3,
-    maxWidth: 1280, margin: '0 auto',
-    width: '100%', marginTop: 'auto',
-  },
-  contentInner: {
-    padding: '0 32px 72px',
-  },
-  dots: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 32,
-  },
-  dot: {
-    height: 8,
-    borderRadius: 4,
-    border: 'none',
-    cursor: 'pointer',
-    padding: 0,
-    transition: 'width 0.35s ease, background 0.35s ease',
-  },
+  mediaSlot:    { position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 },
+  overlay:      { position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2, background: 'linear-gradient(180deg, rgba(244,243,240,0.35) 0%, rgba(244,243,240,0) 30%, rgba(244,243,240,0.15) 62%, #f4f3f0 100%)' },
+  contentOuter: { position: 'relative', zIndex: 3, maxWidth: 1280, margin: '0 auto', width: '100%', marginTop: 'auto' },
+  contentInner: { padding: '0 32px 72px' },
+  dots:         { display: 'flex', alignItems: 'center', gap: 8, marginTop: 32 },
+  dot:          { height: 8, borderRadius: 4, border: 'none', cursor: 'pointer', padding: 0, transition: `width ${FADE}s ease, background ${FADE}s ease` },
 }
