@@ -7,8 +7,10 @@ import Enquiry from './components/Enquiry'
 import Footer from './components/Footer'
 import CarDetail from './components/CarDetail'
 import AskAI from './components/AskAI'
+import ZipLoader from './components/ZipLoader'
 
 export default function App() {
+  const [loaderDone,    setLoaderDone]    = useState(false)
   const [selectedModel, setSelectedModel] = useState('Lumen GT')
   const [detailCar,     setDetailCar]     = useState(null)
 
@@ -40,6 +42,7 @@ export default function App() {
 
   return (
     <>
+      {!loaderDone && <ZipLoader onComplete={() => setLoaderDone(true)} />}
       <Nav />
       <Hero />
       <Catalog onEnquire={enquireAbout} onCarSelect={openDetail} />
