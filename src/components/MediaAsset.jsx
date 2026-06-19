@@ -35,7 +35,10 @@ export default function MediaAsset({ src, alt = '', style = {}, className = '', 
         muted
         playsInline
         preload={eager ? 'auto' : 'none'}
-        style={style}
+        onContextMenu={(e) => e.preventDefault()}
+        controlsList="nodownload nofullscreen"
+        disablePictureInPicture
+        style={{ ...style, pointerEvents: 'none' }}
         className={className}
       />
     )

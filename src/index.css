@@ -1,6 +1,13 @@
 /* ── RESET ── */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+
+/* ── ASSET PROTECTION ── */
+video, img {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
 body {
   background: #f4f3f0;
   color: #18181c;

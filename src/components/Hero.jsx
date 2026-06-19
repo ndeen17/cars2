@@ -85,10 +85,14 @@ export default function Hero() {
             playsInline
             preload={i === 0 ? 'auto' : 'none'}
             onTimeUpdate={handleTimeUpdate(i)}
+            onContextMenu={(e) => e.preventDefault()}
+            controlsList="nodownload nofullscreen"
+            disablePictureInPicture
             className="hero-video"
             style={{
               opacity: active === i ? 1 : 0,
               transition: `opacity ${FADE}s ease`,
+              pointerEvents: 'none',
             }}
           />
         ))}
