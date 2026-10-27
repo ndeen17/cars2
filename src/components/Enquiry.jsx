@@ -1,11 +1,18 @@
 import { useState } from 'react'
 import { CARS } from '../data/cars'
+import { addLead } from '../lib/store'
 
 export default function Enquiry({ selectedModel, onModelChange }) {
   const [submitted, setSubmitted] = useState(false)
 
   function handleSubmit(e) {
     e.preventDefault()
+    const f = new FormData(e.currentTarget)
+    addLead({
+      name: f.get('name'), phone: f.get('phone') || '', email: f.get('email'),
+      model: selectedModel, source: 'Website',
+      note: [f.get('date') && `Preferred date: ${f.get('date')}`, f.get('message')].filter(Boolean).join(' · '),
+    })
     setSubmitted(true)
   }
 
@@ -46,15 +53,15 @@ export default function Enquiry({ selectedModel, onModelChange }) {
             <form onSubmit={handleSubmit} style={s.form}>
               <div className="form-row">
                 <Field label="Full name">
-                  <input required type="text" placeholder="Alex Morgan" />
+                  <input required name="name" type="text" placeholder="Alex Morgan" />
                 </Field>
                 <Field label="Phone">
-                  <input type="tel" placeholder="(555) 012 3456" />
+                  <input name="phone" type="tel" placeholder="0803 000 0000" />
                 </Field>
               </div>
 
               <Field label="Email">
-                <input required type="email" placeholder="you@email.com" />
+                <input required name="email" type="email" placeholder="you@email.com" />
               </Field>
 
               <div className="form-row">
@@ -70,12 +77,13 @@ export default function Enquiry({ selectedModel, onModelChange }) {
                   </select>
                 </Field>
                 <Field label="Preferred date">
-                  <input type="date" />
+                  <input name="date" type="date" />
                 </Field>
               </div>
 
               <Field label="Anything else?">
                 <textarea
+                  name="message"
                   rows={3}
                   placeholder="Trade-in, financing questions, preferred showroom…"
                   style={{ resize: 'vertical' }}

@@ -4,6 +4,8 @@ const NAV_LINKS = [
   { label: 'Models',      href: '#catalog'   },
   { label: 'Electric',    href: '#catalog'   },
   { label: 'Performance', href: '#spotlight' },
+  { label: 'Charging',    href: '#/charging' },
+  { label: 'Naira Saver', href: '#/saver'    },
   { label: 'About',       href: '#enquiry'   },
 ]
 

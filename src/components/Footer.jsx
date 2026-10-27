@@ -35,10 +35,10 @@ export default function Footer() {
 
         {/* company */}
         <div>
-          <h4 style={s.colHead}>Company</h4>
+          <h4 style={s.colHead}>Owners &amp; staff</h4>
           <div style={s.links}>
-            {['About', 'Showrooms', 'Careers', 'Press'].map(l => (
-              <span key={l} className="footer-link" style={s.link}>{l}</span>
+            {[['Charging map', '#/charging'], ['Naira Saver', '#/saver'], ['Staff console', '#/admin']].map(([l, href]) => (
+              <a key={l} href={href} className="footer-link" style={s.link}>{l}</a>
             ))}
           </div>
         </div>
