@@ -46,3 +46,6 @@ export function addUnit(unit) {
 export function resetErp() {
   commit({ inventory: seedInventory(), leads: seedLeads() })
 }
+export function setUnitField(id, patch) {
+  commit({ ...state, inventory: state.inventory.map(u => u.id === id ? { ...u, ...patch } : u) })
+}

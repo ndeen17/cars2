@@ -2,6 +2,7 @@ import { CARS } from '../data/cars'
 import { STATIONS, stationState } from '../data/stations'
 import { naira, priceUsd, FX_NGN_PER_USD, PETROL_NGN_PER_L, HOME_NGN_PER_KWH, ICE_L_PER_100KM } from '../data/config'
 import { getErp } from './store'
+import { ROLES } from '../data/users'
 
 // Rule-based demo concierge. Same interface a real LLM backend would expose:
 // reply(text, ctx) -> { text, chips? }. Swap the bodies for an API call later.
@@ -112,15 +113,21 @@ export function customerReply(text, ctx = {}) {
   }
 }
 
-export function staffReply(text) {
+const DENIED = label => ({ text: `That's outside your ${label} access — ask an administrator.` })
+
+export function staffReply(text, roleKey = 'admin') {
   const q = text.toLowerCase()
-  const { inventory, leads } = getErp()
+  const role = ROLES[roleKey] ?? ROLES.admin
+  const canLeads = role.tabs.includes('Leads'), canFinance = role.perms.seeFinance
+  const erp = getErp()
+  const inventory = role.perms.evOnly ? erp.inventory.filter(u => u.ev) : erp.inventory
+  const leads = canLeads ? erp.leads : []
   const avail = inventory.filter(u => u.status === 'In stock')
 
   if (has(q, /summary|brief|today|overview|how are we doing/)) {
     const hot = leads.filter(l => ['Test drive', 'Negotiating'].includes(l.stage)).length
     const fresh = leads.filter(l => l.stage === 'New').length
-    return { text: `Snapshot: ${avail.length} units in stock, ${inventory.filter(u => u.status === 'In transit').length} in transit, ${inventory.filter(u => u.status === 'Reserved').length} reserved. Pipeline has ${fresh} new and ${hot} hot leads. Ask me about ageing stock, customs, or who to call next.` }
+    return { text: `Snapshot: ${avail.length} units in stock, ${inventory.filter(u => u.status === 'In transit').length} in transit, ${inventory.filter(u => u.status === 'Reserved').length} reserved.${canLeads ? ` Pipeline has ${fresh} new and ${hot} hot leads.` : ''} Ask me about ageing stock, customs, battery health${canLeads ? ', or who to call next' : ''}.` }
   }
 
   if (has(q, /ageing|aging|old stock|slow|stale|days in stock/)) {
@@ -140,6 +147,7 @@ export function staffReply(text) {
   }
 
   if (has(q, /lead|follow|call next|who|pipeline|new enquir/)) {
+    if (!canLeads) return DENIED(role.label)
     const next = leads.filter(l => ['New', 'Contacted', 'Test drive', 'Negotiating'].includes(l.stage))
       .sort((a, b) => ['Negotiating', 'Test drive', 'New', 'Contacted'].indexOf(a.stage) - ['Negotiating', 'Test drive', 'New', 'Contacted'].indexOf(b.stage))
       .slice(0, 4)
@@ -157,6 +165,7 @@ export function staffReply(text) {
   }
 
   if (has(q, /revenue|sales|sold|worth|value|margin/)) {
+    if (!canFinance) return DENIED(role.label)
     const sold = inventory.filter(u => u.status === 'Sold')
     const rev = sold.reduce((a, u) => a + u.priceUsd, 0)
     const pipe = inventory.filter(u => u.status === 'Reserved').reduce((a, u) => a + u.priceUsd, 0)

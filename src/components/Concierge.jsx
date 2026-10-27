@@ -3,6 +3,7 @@ import { customerReply, staffReply } from '../lib/concierge'
 import { generateResponse } from '../lib/carQa'
 import { addLead } from '../lib/store'
 import { CARS } from '../data/cars'
+import { ROLES } from '../data/users'
 
 const COPY = {
   customer: {
@@ -33,8 +34,10 @@ const COPY = {
   },
 }
 
-export default function Concierge({ mode = 'customer', car = null }) {
-  const copy = COPY[mode]
+export default function Concierge({ mode = 'customer', car = null, roleKey }) {
+  const copy = mode === 'staff' && !ROLES[roleKey]?.tabs.includes('Leads')
+    ? { ...COPY.staff, chips: COPY.staff.chips.filter(c => c.label !== 'Follow-ups') }
+    : COPY[mode]
   const [open, setOpen]         = useState(false)
   const [messages, setMessages] = useState([])
   const [input, setInput]       = useState('')
@@ -94,7 +97,7 @@ export default function Concierge({ mode = 'customer', car = null }) {
     if (flow) return continueBooking(text)
 
     const r = mode === 'staff'
-      ? staffReply(text)
+      ? staffReply(text, roleKey)
       : customerReply(text, { car, fallback: generateResponse })
 
     if (r.text === '__START_BOOKING__') return startBooking()

@@ -14,7 +14,7 @@ import AdminERP from './pages/AdminERP'
 
 // Hash routes: '#/charging', '#/saver', '#/admin'. Anything else is the home page
 // (including plain anchors like '#catalog').
-const PAGES = { '/charging': ChargingMap, '/saver': NairaSaver, '/admin': AdminERP }
+const PAGES = { '/charging': ChargingMap, '/saver': NairaSaver }
 
 function useRoute() {
   const read = () => (window.location.hash.startsWith('#/') ? window.location.hash.slice(1) : '/')
@@ -69,6 +69,9 @@ export default function App() {
     }, 320)
   }
 
+  // The staff console is its own app: no public nav, footer, intro loader or customer chat.
+  if (route === '/admin') return <AdminERP />
+
   return (
     <>
       {!loaderDone && <ZipLoader onComplete={() => setLoaderDone(true)} />}
@@ -90,7 +93,7 @@ export default function App() {
         <CarDetail car={detailCar} onClose={closeDetail} onEnquire={enquireAbout} />
       )}
 
-      <Concierge key={route === '/admin' ? 'staff' : 'customer'} mode={route === '/admin' ? 'staff' : 'customer'} car={Page ? null : detailCar} />
+      <Concierge car={Page ? null : detailCar} />
     </>
   )
 }
